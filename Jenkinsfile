@@ -1,16 +1,13 @@
 pipeline {
     agent any
-
     stages {
         stage('Build') {
-            agent {
+         agent {
                 docker {
                     image 'node:18-alpine'
                     reuseNode true
                     }
-                image node:18-alpine
-                reuseNode true
-            }
+              }
             steps {
                 sh '''
                 ls -la
@@ -21,7 +18,13 @@ pipeline {
                 ls -la
                 '''
             }
-           
+        }
+             stage ('Test') {
+                steps {
+                    sh '''
+                    echo "Test stage"
+                    '''
+                }      
         }
     }
 }
