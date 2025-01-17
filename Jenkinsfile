@@ -27,12 +27,8 @@ pipeline {
                 }
                 steps {
                     sh '''
-                    echo "Test stage"
-                    node --version
-                    npm --version
-                    npm ci
-                    npm run test
-                    ls -ltr
+                    test -f build/index.html             
+                    npm test
                     '''
                 }      
         }
