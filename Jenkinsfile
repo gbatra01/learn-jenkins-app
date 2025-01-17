@@ -20,9 +20,19 @@ pipeline {
             }
         }
              stage ('Test') {
+                agent {
+                    docker {
+                        image 'node:18-alpine'
+                    }
+                }
                 steps {
                     sh '''
                     echo "Test stage"
+                    node --version
+                    npm --version
+                    npm ci
+                    npm run test
+                    ls -ltr
                     '''
                 }      
         }
