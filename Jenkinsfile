@@ -9,7 +9,7 @@ pipeline {
             steps {
                 sh 'npm install netlify-cli'
                 sh 'npm --version'
-                sh 'netlify --version'
+                sh 'npx netlify --version'
             }
         }
         stage('Build Application') {
