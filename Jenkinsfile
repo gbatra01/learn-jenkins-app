@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Install Netlify CLI') {
             steps {
-                sh 'npm ci'
+                sh 'npm install'
                 sh 'npm install netlify-cli'
                 sh 'npm --version'
                 sh 'netlify --version'
