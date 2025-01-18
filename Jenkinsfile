@@ -34,11 +34,13 @@ pipeline {
                         sh '''
                             test -f build/index.html
                             npm test
+                            ls -la test-results/
+
                         '''
                     }
                     post {
                         always {
-                            junit 'jest-results/junit.xml'
+                            junit 'test-results/junit.xml'
                         }
                     }
                 }
