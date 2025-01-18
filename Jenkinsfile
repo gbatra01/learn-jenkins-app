@@ -41,6 +41,7 @@ pipeline {
                             test -f build/index.html
                             npm test
                             ls -la test-results/
+                            echo "test complete"
 
                         '''
                     }
