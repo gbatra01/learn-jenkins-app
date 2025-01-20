@@ -1,8 +1,13 @@
 pipeline {
     agent any
 
+    environment {
+            NETLIFY_SITE_ID = 'c4ac9aed-d304-429c-aff6-75ffeedfa0bf'
+
+    }
+
     stages {
-        /*
+        
 
         stage('Build') {
             agent {
@@ -22,7 +27,7 @@ pipeline {
                 '''
             }
         }
-        */
+        
 
         stage('Test') {
             agent {
@@ -64,5 +69,24 @@ pipeline {
             junit 'jest-results/junit.xml'
             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
         }
+
+        stage ('Deploy') {
+            agent {
+                docker {
+                image 'node:18-alpine'           
+                reuseNode true
+                }
+            }
+
+            steps {
+                sh '''
+                npm install netlify-cli
+                node_modules/.bin/netlify --version
+                echo "Deploy to production SITE_ID: $NETLIFY_SITE_ID"
+                
+                '''
+            }
+        }
+
     }
 }
