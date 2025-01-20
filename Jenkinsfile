@@ -3,7 +3,7 @@ pipeline {
         environment {
                     NETLIFY_SITE_ID = 'c4ac9aed-d304-429c-aff6-75ffeedfa0bf'
                     NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-                    CI_ENVIRONMENT_URL = 'https://gentle-basbousa-138261.netlify.app'
+                   
         }
    
 
@@ -120,6 +120,9 @@ pipeline {
                             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
                             reuseNode true
                         }
+                    }
+                    environment { 
+                        CI_ENVIRONMENT_URL = 'https://gentle-basbousa-138261.netlify.app'
                     }
 
                 
