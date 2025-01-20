@@ -1,10 +1,7 @@
 pipeline {
     agent any
 
-    environment {
-        NETLIFY_SITE_ID = 'c4ac9aed-d304-429c-aff6-75ffeedfa0bf'
-        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-    }
+   
 
     stages {
 
@@ -94,6 +91,31 @@ pipeline {
                 '''
             }
         }
+        stage('Prod E2E') {
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            reuseNode true
+                        }
+                    }
+
+                environment {
+                    NETLIFY_SITE_ID = 'c4ac9aed-d304-429c-aff6-75ffeedfa0bf'
+                    NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+                    CI_ENVIRONMENT_URL = 'https://gentle-basbousa-138261.netlify.app'
+                }
+                    steps {
+                        sh '''
+                        npx playwright test  --reporter=html
+                        '''
+                    }
+
+                    post {
+                        always {
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Prod E2E HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                    }
+                }
     }
 }
 
