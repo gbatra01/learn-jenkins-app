@@ -1,6 +1,10 @@
 pipeline {
     agent any
-
+        environment {
+                    NETLIFY_SITE_ID = 'c4ac9aed-d304-429c-aff6-75ffeedfa0bf'
+                    NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+                    CI_ENVIRONMENT_URL = 'https://gentle-basbousa-138261.netlify.app'
+        }
    
 
     stages {
@@ -99,11 +103,7 @@ pipeline {
                         }
                     }
 
-                environment {
-                    NETLIFY_SITE_ID = 'c4ac9aed-d304-429c-aff6-75ffeedfa0bf'
-                    NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-                    CI_ENVIRONMENT_URL = 'https://gentle-basbousa-138261.netlify.app'
-                }
+                
                     steps {
                         sh '''
                         npx playwright test  --reporter=html
