@@ -7,8 +7,6 @@ pipeline {
     }
 
     stages {
-        
-
         stage('Build') {
             agent {
                 docker {
@@ -30,6 +28,7 @@ pipeline {
         
 
         stage('Test') {
+            
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -67,8 +66,10 @@ pipeline {
                 always {
             junit 'jest-results/junit.xml'
             publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-        }
+                }
             }
+        
+    
 
         stage ('Deploy') {
             agent {
@@ -89,4 +90,5 @@ pipeline {
         }
     }
 }
+
 
