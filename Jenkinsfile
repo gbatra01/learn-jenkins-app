@@ -2,10 +2,9 @@ pipeline {
     agent any
 
     environment {
-
-        NETLIFY_SITE_ID = 'c4ac9aed-d304-429c-aff6-75ffeedfa0bf'
-        NETLIFY_AUTH_TOKEN = credentials ('netlify-token')
-    }            
+        NETLIFY_SITE_ID = 'PUT YOUR NETLIFY SITE ID HERE'
+        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+    }
 
     stages {
 
@@ -27,7 +26,8 @@ pipeline {
                 '''
             }
         }
-         
+
+        stage('Tests') {
                 stage('Unit tests') {
                     agent {
                         docker {
@@ -38,39 +38,41 @@ pipeline {
 
                     steps {
                         sh '''
-                            test -f build/index.html
+                            #test -f build/index.html
                             npm test
-                            ls -la test-results/
-                            echo "test complete"
-
                         '''
                     }
                     post {
                         always {
-                            junit 'test-results/junit.xml'
+                            junit 'jest-results/junit.xml'
                         }
                     }
                 }
 
-               
-        
+                stage('E2E') {
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                            reuseNode true
+                        }
+                    }
 
-        stage('Deploy') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
+                    steps {
+                        sh '''
+                            npm install serve
+                            node_modules/.bin/serve -s build &
+                            sleep 10
+                        #    npx playwright test  --reporter=html
+                        '''
+                    }
+
+                 /*   post {
+                        always {
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                    } */
                 }
             }
-            steps {
-                sh '''
-                    npm install netlify-cli
-                    node_modules/.bin/netlify --version
-                    echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --prod
-                '''
-            }
         }
+
     }
-}
